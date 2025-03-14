@@ -1,7 +1,6 @@
-const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Remplacez par votre clé API TMDb
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-const favoriteButton = document.getElementById('favorite-button');
 const resultsContainer = document.getElementById('results-container');
 const favoritesList = document.getElementById('favorites-list');
 const loadingGif = document.getElementById('bloc-gif-attente');
@@ -17,22 +16,18 @@ function displayFavorites() {
     } else {
         favorites.forEach(favorite => {
             const li = document.createElement('li');
-            li.textContent = favorite;
+            li.textContent = favorite.title;
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = '<i class="fas fa-times"></i>';
             deleteButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (confirm('Voulez-vous vraiment supprimer ce favori ?')) {
-                    favorites = favorites.filter(f => f !== favorite);
+                    favorites = favorites.filter(f => f.id !== favorite.id);
                     localStorage.setItem('favorites', JSON.stringify(favorites));
                     displayFavorites();
                 }
             });
             li.appendChild(deleteButton);
-            li.addEventListener('click', () => {
-                searchInput.value = favorite;
-                searchMovies(favorite);
-            });
             favoritesList.appendChild(li);
         });
     }
@@ -66,13 +61,19 @@ function searchMovies(query) {
                     const year = document.createElement('p');
                     year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
 
-                    const overview = document.createElement('p');
-                    overview.textContent = movie.overview;
+                    const favoriteButton = document.createElement('button');
+                    favoriteButton.classList.add('favorite-button');
+                    updateFavoriteButton(favoriteButton, movie);
+
+                    favoriteButton.addEventListener('click', () => {
+                        toggleFavorite(movie);
+                        updateFavoriteButton(favoriteButton, movie);
+                    });
 
                     movieCard.appendChild(img);
                     movieCard.appendChild(title);
                     movieCard.appendChild(year);
-                    movieCard.appendChild(overview);
+                    movieCard.appendChild(favoriteButton);
 
                     resultsContainer.appendChild(movieCard);
                 });
@@ -87,51 +88,30 @@ function searchMovies(query) {
         });
 }
 
+function updateFavoriteButton(button, movie) {
+    const isFavorite = favorites.some(fav => fav.id === movie.id);
+    button.innerHTML = isFavorite ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+    button.title = isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+}
+
+function toggleFavorite(movie) {
+    const index = favorites.findIndex(fav => fav.id === movie.id);
+    if (index !== -1) {
+        favorites.splice(index, 1);
+    } else {
+        favorites.push({ id: movie.id, title: movie.title });
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    displayFavorites();
+}
+
 searchInput.addEventListener('input', () => {
     searchButton.disabled = searchInput.value.trim() === '';
-    const searchTerm = searchInput.value.trim();
-
-    if (searchTerm === ''){
-        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
-        favoriteButton.disabled = true;
-        return;
-    }
-
-    favoriteButton.disabled = false;
-
-    if (favorites.includes(searchTerm)){
-        favoriteButton.innerHTML = '<i class="fas fa-star"></i>';
-    }
-    else{
-        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
-    }
 });
 
 searchButton.addEventListener('click', () => {
     const searchTerm = searchInput.value.trim();
     searchMovies(searchTerm);
-});
-
-favoriteButton.addEventListener('click', () => {
-    const searchTerm = searchInput.value.trim();
-
-    if (favorites.includes(searchTerm)) {
-        if (confirm('Voulez-vous supprimer ce favori ?')) {
-            favorites = favorites.filter(f => f !== searchTerm);
-        }
-    } else {
-        favorites.push(searchTerm);
-    }
-
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    displayFavorites();
-
-    if (favorites.includes(searchTerm)){
-        favoriteButton.innerHTML = '<i class="fas fa-star"></i>';
-    }
-    else{
-        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
-    }
 });
 
 displayFavorites();
