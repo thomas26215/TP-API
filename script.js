@@ -1,4 +1,4 @@
-const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Remplacez par votre clé API TMDb
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Remplacez par votre clé API TMDb (Vérifiez qu'elle est correcte!)
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 const favoriteButton = document.getElementById('favorite-button');
@@ -42,7 +42,7 @@ function displayFavorites() {
 function searchMovies(query) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = ''; // Efface les résultats précédents
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=&2fa77c81a2d451f7470fd8d397c639d0query=${query}&language=fr-FR`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR`;
 
     fetch(url)
         .then(response => response.json())
@@ -54,7 +54,7 @@ function searchMovies(query) {
                     movieCard.classList.add('movie-card');
 
                     const img = document.createElement('img');
-                    img.src = `https://image.tmdb.org/t/p/w92${movie.poster_path}`; // w92 est la largeur de l'image
+                    img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png'; // w92 est la largeur de l'image
                     img.alt = movie.title;
 
                     const title = document.createElement('h3');
