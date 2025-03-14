@@ -59,18 +59,23 @@ h1, h2 {
     background-color: #f0f0f0;
 }
 
-#search-button {
+#search-button, #open-new-page {
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 #search-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+#open-new-page:hover {
+    background-color: #45a049;
 }
 
 #results-container {

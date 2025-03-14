@@ -1,19 +1,13 @@
-const apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Remplacez par votre clé API TMDb
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
+const favoriteButton = document.getElementById('favorite-button');
 const resultsContainer = document.getElementById('results-container');
 const favoritesList = document.getElementById('favorites-list');
 const loadingGif = document.getElementById('bloc-gif-attente');
-const suggestionsContainer = document.getElementById('suggestions');
-const prevPageButton = document.getElementById('prev-page');
-const nextPageButton = document.getElementById('next-page');
 
-let currentPage = 1;
-let totalPages = 0;
-let currentQuery = '';
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-// Fonction pour afficher les favoris
 function displayFavorites() {
     favoritesList.innerHTML = '';
     if (favorites.length === 0) {
@@ -23,46 +17,63 @@ function displayFavorites() {
     } else {
         favorites.forEach(favorite => {
             const li = document.createElement('li');
-            li.textContent = favorite.title;
+            li.textContent = favorite;
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = '<i class="fas fa-times"></i>';
-            deleteButton.addEventListener('click', (event) => {
-                event.stopPropagation();
+            deleteButton.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (confirm('Voulez-vous vraiment supprimer ce favori ?')) {
-                    favorites = favorites.filter(f => f.id !== favorite.id);
+                    favorites = favorites.filter(f => f !== favorite);
                     localStorage.setItem('favorites', JSON.stringify(favorites));
                     displayFavorites();
                 }
             });
             li.appendChild(deleteButton);
             li.addEventListener('click', () => {
-                searchInput.value = favorite.title;
-                searchMovies(favorite.title);
+                searchInput.value = favorite;
+                searchMovies(favorite);
             });
             favoritesList.appendChild(li);
         });
     }
 }
 
-// Fonction pour rechercher des films
-function searchMovies(query, page = 1) {
+function searchMovies(query) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = '';
-    currentQuery = query;
-    currentPage = page;
-
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR&page=${page}`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
             loadingGif.style.display = 'none';
-            totalPages = data.total_pages;
-            updatePaginationButtons();
-
             if (data.results && data.results.length > 0) {
                 data.results.forEach(movie => {
-                    const movieCard = createMovieCard(movie);
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('movie-card');
+
+                    const img = document.createElement('img');
+                    img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
+                    img.alt = movie.title;
+                    img.addEventListener('click', () => {
+                        window.location.href = `movie-details.html?id=${movie.id}`;
+                    });
+                    img.style.cursor = 'pointer';
+
+                    const title = document.createElement('h3');
+                    title.textContent = movie.title;
+
+                    const year = document.createElement('p');
+                    year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
+
+                    const overview = document.createElement('p');
+                    overview.textContent = movie.overview;
+
+                    movieCard.appendChild(img);
+                    movieCard.appendChild(title);
+                    movieCard.appendChild(year);
+                    movieCard.appendChild(overview);
+
                     resultsContainer.appendChild(movieCard);
                 });
             } else {
@@ -76,102 +87,52 @@ function searchMovies(query, page = 1) {
         });
 }
 
-// Fonction pour créer une carte de film
-function createMovieCard(movie) {
-    const movieCard = document.createElement('div');
-    movieCard.classList.add('movie-card');
-
-    const img = document.createElement('img');
-    img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : 'placeholder.png';
-    img.alt = movie.title;
-
-    const title = document.createElement('h3');
-    title.textContent = movie.title;
-
-    const year = document.createElement('p');
-    year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
-
-    const favoriteButton = document.createElement('button');
-    favoriteButton.innerHTML = favorites.some(f => f.id === movie.id) ? '★' : '☆';
-    favoriteButton.addEventListener('click', () => toggleFavorite(movie));
-
-    movieCard.appendChild(img);
-    movieCard.appendChild(title);
-    movieCard.appendChild(year);
-    movieCard.appendChild(favoriteButton);
-
-    return movieCard;
-}
-
-// Fonction pour basculer un film en favori
-function toggleFavorite(movie) {
-    const index = favorites.findIndex(f => f.id === movie.id);
-    if (index === -1) {
-        favorites.push({ id: movie.id, title: movie.title });
-    } else {
-        favorites.splice(index, 1);
-    }
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    displayFavorites();
-    searchMovies(currentQuery, currentPage);
-}
-
-// Fonction pour mettre à jour les boutons de pagination
-function updatePaginationButtons() {
-    prevPageButton.style.display = currentPage > 1 ? 'inline' : 'none';
-    nextPageButton.style.display = currentPage < totalPages ? 'inline' : 'none';
-}
-
-// Fonction pour afficher les suggestions
-function displaySuggestions(suggestions) {
-    suggestionsContainer.innerHTML = '';
-    suggestions.forEach(movie => {
-        const suggestionItem = document.createElement('div');
-        suggestionItem.classList.add('suggestion-item');
-        suggestionItem.textContent = movie.title;
-        suggestionItem.addEventListener('click', () => {
-            searchInput.value = movie.title;
-            suggestionsContainer.innerHTML = '';
-            searchMovies(movie.title);
-        });
-        suggestionsContainer.appendChild(suggestionItem);
-    });
-}
-
-// Gestion des événements
 searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim();
-    searchButton.disabled = query === '';
+    searchButton.disabled = searchInput.value.trim() === '';
+    const searchTerm = searchInput.value.trim();
 
-    if (query.length > 2) {
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR`;
-        fetch(url)
-            .then(response => response.json())
-            .then(data => displaySuggestions(data.results.slice(0, 5)))
-            .catch(error => console.error(error));
-    } else {
-        suggestionsContainer.innerHTML = '';
+    if (searchTerm === ''){
+        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
+        favoriteButton.disabled = true;
+        return;
+    }
+
+    favoriteButton.disabled = false;
+
+    if (favorites.includes(searchTerm)){
+        favoriteButton.innerHTML = '<i class="fas fa-star"></i>';
+    }
+    else{
+        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
     }
 });
 
 searchButton.addEventListener('click', () => {
     const searchTerm = searchInput.value.trim();
-    suggestionsContainer.innerHTML = '';
     searchMovies(searchTerm);
 });
 
-prevPageButton.addEventListener('click', () => {
-    if (currentPage > 1) {
-        searchMovies(currentQuery, currentPage - 1);
+favoriteButton.addEventListener('click', () => {
+    const searchTerm = searchInput.value.trim();
+
+    if (favorites.includes(searchTerm)) {
+        if (confirm('Voulez-vous supprimer ce favori ?')) {
+            favorites = favorites.filter(f => f !== searchTerm);
+        }
+    } else {
+        favorites.push(searchTerm);
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    displayFavorites();
+
+    if (favorites.includes(searchTerm)){
+        favoriteButton.innerHTML = '<i class="fas fa-star"></i>';
+    }
+    else{
+        favoriteButton.innerHTML = '<i class="far fa-star"></i>';
     }
 });
 
-nextPageButton.addEventListener('click', () => {
-    if (currentPage < totalPages) {
-        searchMovies(currentQuery, currentPage + 1);
-    }
-});
-
-// Initialisation
 displayFavorites();
 
