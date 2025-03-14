@@ -14,21 +14,23 @@
 
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Titre du film">
+            <div id="suggestions"></div>
             <button id="search-button" disabled><i class="fas fa-search"></i></button>
-            <button id="favorite-button"><i class="far fa-star"></i></button>
         </div>
 
         <div id="bloc-gif-attente" style="display:none;">
             <img src="loading.gif" alt="Chargement...">
         </div>
 
-        <div id="results-container">
+        <div id="results-container"></div>
+
+        <div id="pagination">
+            <button id="prev-page" style="display:none;">Précédent</button>
+            <button id="next-page" style="display:none;">Suivant</button>
         </div>
 
         <h2>Favoris</h2>
-        <ul id="favorites-list">
-            <li>(Aucune recherche favorite)</li>
-        </ul>
+        <ul id="favorites-list"></ul>
     </div>
 
     <script src="script.js"></script>
