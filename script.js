@@ -42,7 +42,7 @@ function displayFavorites() {
 function searchMovies(query) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = ''; // Efface les résultats précédents
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=&2fa77c81a2d451f7470fd8d397c639d0query=${query}&language=fr-FR`;
 
     fetch(url)
         .then(response => response.json())
