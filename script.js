@@ -1,4 +1,4 @@
-const apiKey = 'VOTRE_CLE_API'; // Remplacez par votre clé API TMDb
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Remplacez par votre clé API TMDb
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 const favoriteButton = document.getElementById('favorite-button');
