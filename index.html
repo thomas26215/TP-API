@@ -14,8 +14,21 @@
 
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Titre du film">
-            <div id="suggestions"></div>
             <button id="search-button" disabled><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="filters">
+            <select id="genre-filter">
+                <option value="">Tous les genres</option>
+            </select>
+            <input type="number" id="year-filter" placeholder="Année de sortie">
+            <select id="rating-filter">
+                <option value="">Toutes les notes</option>
+                <option value="7">7+ ⭐</option>
+                <option value="8">8+ ⭐</option>
+                <option value="9">9+ ⭐</option>
+            </select>
+            <button id="apply-filters">Appliquer les filtres</button>
         </div>
 
         <div id="bloc-gif-attente" style="display:none;">
