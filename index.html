@@ -8,14 +8,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
+
+    <header>
+        <div class="boxed">
+                <div class="flex align-center space-between">
+                        <a href="https://iut2.univ-grenoble-alpes.fr" class="header-logo" target="_blank">
+                                <img src="images/Logo_IUT2.jpg" alt="">
+                        </a>
+                        <ul class="header-menu">
+                        <li><a href="#">Accueil</a></li>
+                        <li><a href="#about">Film</a></li>
+                        <li><a href="#skills">Série</a></li>
+                        <li>
+                            <div class="search-container">
+                                <input type="text" id="search-input" placeholder="Titre du film">
+                            </div>
+                        </li>
+                        <li>
+                            <button id="search-button" disabled><i class="fas fa-search"></i></button>
+
+                        </li>
+                        </ul>
+        
+                </div>
+        </div>
+
+</header>
+
+
+
+
+
+
+
+
+
     <div class="container">
         <h1>Recherche de Films TMDb</h1>
         <p>Entrez le titre d'un film pour obtenir des informations.</p>
 
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Titre du film">
-            <button id="search-button" disabled><i class="fas fa-search"></i></button>
-        </div>
+       
 
         <div class="filters">
             <select id="genre-filter">
