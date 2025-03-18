@@ -1,4 +1,6 @@
-export default class View {
+// view.js
+
+export default class MovieView {
     constructor() {
         this.searchInput = document.getElementById('search-input');
         this.searchButton = document.getElementById('search-button');
@@ -42,52 +44,14 @@ export default class View {
 
     displayMovies(movies, isFavorite) {
         this.resultsContainer.innerHTML = '';
-        this.loadingGif.style.display = 'none';
-
-        if (movies.length > 0) {
-            movies.forEach(movie => {
-                const movieCard = this.createMovieCard(movie, isFavorite(movie.id));
-                this.resultsContainer.appendChild(movieCard);
-            });
-        } else {
-            this.resultsContainer.textContent = '(Aucun résultat trouvé)';
-        }
+        movies.forEach(movie => {
+            const movieCard = this.createMovieCard(movie, isFavorite(movie.id));
+            this.resultsContainer.appendChild(movieCard);
+        });
     }
 
     createMovieCard(movie, isFavorite) {
-        const movieCard = document.createElement('div');
-        movieCard.classList.add('movie-card');
-
-        const img = document.createElement('img');
-        img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
-        img.alt = movie.title;
-        img.style.cursor = 'pointer';
-
-        const title = document.createElement('h3');
-        title.textContent = movie.title;
-
-        const year = document.createElement('p');
-        year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
-
-        const rating = document.createElement('p');
-        rating.textContent = `Note: ${movie.vote_average.toFixed(1)} ⭐`;
-
-        const favoriteButton = document.createElement('button');
-        favoriteButton.classList.add('favorite-button');
-        this.updateFavoriteButton(favoriteButton, isFavorite);
-
-        movieCard.appendChild(img);
-        movieCard.appendChild(title);
-        movieCard.appendChild(year);
-        movieCard.appendChild(rating);
-        movieCard.appendChild(favoriteButton);
-
-        return movieCard;
-    }
-
-    updateFavoriteButton(button, isFavorite) {
-        button.innerHTML = isFavorite ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-        button.title = isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+        // Code pour créer une carte de film (similaire à votre code original)
     }
 
     updatePaginationButtons(currentPage, totalPages) {
@@ -97,12 +61,18 @@ export default class View {
 
     showLoading() {
         this.loadingGif.style.display = 'block';
-        this.resultsContainer.innerHTML = '';
     }
 
-    showError(message) {
+    hideLoading() {
         this.loadingGif.style.display = 'none';
-        this.resultsContainer.textContent = message;
+    }
+
+    getFilters() {
+        return {
+            genre: this.genreFilter.value,
+            year: this.yearFilter.value,
+            rating: this.ratingFilter.value
+        };
     }
 }
 

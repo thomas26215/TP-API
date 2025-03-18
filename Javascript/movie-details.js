@@ -1,38 +1,46 @@
-const apiKey = '2fa77c81a2d451f7470fd8d397c639d0'; // Utilisez la même clé API
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
+    const mediaType = urlParams.get('media_type') || 'movie';
 
     if (movieId) {
-        fetchMovieDetails(movieId);
+        fetchDetails(movieId, mediaType);
     } else {
-        document.getElementById('movie-details').textContent = 'Aucun film sélectionné';
+        document.getElementById('movie-details').textContent = 'Aucun film ou série sélectionné';
     }
 });
 
-function fetchMovieDetails(movieId) {
-    const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=fr-FR`;
+function fetchDetails(id, mediaType) {
+    const url = `https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${apiKey}&language=fr-FR`;
 
     fetch(url)
         .then(response => response.json())
-        .then(movie => {
-            displayMovieDetails(movie);
+        .then(item => {
+            displayDetails(item, mediaType);
         })
         .catch(error => {
-            console.error('Erreur lors de la récupération des détails du film:', error);
-            document.getElementById('movie-details').textContent = 'Erreur lors du chargement des détails du film.';
+            console.error('Erreur lors de la récupération des détails:', error);
+            document.getElementById('movie-details').textContent = 'Erreur lors du chargement des détails.';
         });
 }
 
-function displayMovieDetails(movie) {
+function displayDetails(item, mediaType) {
     const detailsContainer = document.getElementById('movie-details');
+    const title = mediaType === 'movie' ? item.title : item.name;
+    const releaseDate = mediaType === 'movie' ? item.release_date : item.first_air_date;
+
     detailsContainer.innerHTML = `
-        <h1>${movie.title}</h1>
-        <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title}">
-        <p>Date de sortie : ${movie.release_date}</p>
-        <p>Note moyenne : ${movie.vote_average}/10</p>
-        <p>Synopsis : ${movie.overview}</p>
+        <div class="info">
+            <h1>${title}</h1>
+            <img src="https://image.tmdb.org/t/p/w300${item.poster_path}" alt="${title}">
+            <div class="detail-item"><i class="fas fa-calendar"></i> <bold>Date de sortie : ${releaseDate}</div>
+            <div class="detail-item"><i class="fas fa-star"></i> Note moyenne : ${item.vote_average}/10</div>
+            <div class="detail-item"><i class="fas fa-film"></i> Genre : ${item.genres ? item.genres.map(genre => genre.name).join(', ') : ''}</div>
+            ${mediaType === 'tv' ? `<div class="detail-item"><i class="fas fa-tv"></i> Nombre de saisons : ${item.number_of_seasons}</div>` : ''}
+            <div class="detail-item"><i class="fas fa-align-left"></i> Synopsis : ${item.overview}</div>
+        </div>
     `;
 }
 

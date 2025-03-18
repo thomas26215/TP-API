@@ -3,24 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TP-API Recherche de Films</title>
+    <title>TP-API Recherche de Films et Séries</title>
     <link rel="stylesheet" href="Style/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Style pour la notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Initialement cachée */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.4s ease-out;
+            transform: translateY(-20px); /* Déplace légèrement vers le haut initialement */
+        }
+
+        .notification.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0); /* Remet à sa position normale */
+        }
+
+        #favorites-list {
+            list-style: none;
+            padding: 0;
+            display: flex; /* Utiliser flexbox pour une barre horizontale */
+            overflow-x: auto; /* Permettre le défilement horizontal */
+            white-space: nowrap; /* Empêcher les éléments de passer à la ligne */
+        }
+
+        #favorites-list li {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s ease;
+        }
+
+        #favorites-list li:hover {
+            background-color: #e9e9e9;
+        }
+
+        #favorites-list li button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #favorites-list li button:hover {
+            background-color: #c0392b;
+        }
+
+        #page-info {
+            margin: 0 15px;
+            font-size: 1rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-number {
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .page-number.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .page-number:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div class="boxed">
             <div class="flex align-center space-between">
-                <a href="https://iut2.univ-grenoble-alpes.fr" class="header-logo" target="_blank">
-                    <img src="images/Logo_IUT2.jpg" alt="">
+                <a href="#" class="header-logo">
+                    <img src="images/Logo_IUT2.png" alt="Logo IUT2">
                 </a>
                 <ul class="header-menu">
-                    <li><a href="#">Accueil</a></li>
-                    <li><a href="#about">Film</a></li>
-                    <li><a href="#skills">Série</a></li>
+                    <li><a href="#" id="home-link" data-media-type="all" class="active">Accueil</a></li>
+                    <li><a href="#" id="movie-link" data-media-type="movie">Film</a></li>
+                    <li><a href="#" id="series-link" data-media-type="tv">Série</a></li>
                     <li>
                         <div class="search-container">
-                            <input type="text" id="search-input" placeholder="Titre du film">
+                            <input type="text" id="search-input" placeholder="Titre du film ou série">
                         </div>
                     </li>
                     <li>
@@ -32,8 +119,8 @@
     </header>
 
     <div class="container">
-        <h1>Recherche de Films TMDb</h1>
-        <p>Entrez le titre d'un film pour obtenir des informations.</p>
+        <h1>Recherche de Films et Séries TMDb</h1>
+        <p>Entrez le titre d'un film ou d'une série pour obtenir des informations.</p>
 
         <div class="filters">
             <select id="genre-filter">
@@ -55,22 +142,23 @@
 
         <div id="results-container"></div>
 
+        <!-- Pagination -->
         <div id="pagination">
             <button id="prev-page" style="display:none;">Précédent</button>
+            <span id="page-info"></span> <!-- Conteneur pour les numéros de page -->
             <button id="next-page" style="display:none;">Suivant</button>
         </div>
 
+        <!-- Favoris -->
         <h2>Favoris</h2>
         <ul id="favorites-list"></ul>
     </div>
 
-    <script type="module">
-        import Controller from './Javascript/Recherche/controller.js';
-        import Model from './Javascript/Recherche/model.js';
-        import View from './Javascript/Recherche/view.js';
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
 
-        const app = new Controller(new Model(), new View());
-    </script>
+    <!-- Script principal -->
+    <script src="./Javascript/script.js"></script>
 </body>
 </html>
 

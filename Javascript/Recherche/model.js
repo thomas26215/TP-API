@@ -1,7 +1,8 @@
-const apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
+// model.js
 
-export default class Model {
+export default class MovieModel {
     constructor() {
+        this.apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
         this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         this.genres = [];
         this.currentPage = 1;
@@ -10,7 +11,7 @@ export default class Model {
 
     async loadGenres() {
         try {
-            const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`);
+            const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=fr-FR`);
             const data = await response.json();
             this.genres = data.genres;
             return this.genres;
@@ -20,7 +21,7 @@ export default class Model {
     }
 
     async searchMovies(query, filters = {}, page = 1) {
-        let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR&page=${page}`;
+        let url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${query}&language=fr-FR&page=${page}`;
 
         if (filters.genre) url += `&with_genres=${filters.genre}`;
         if (filters.year) url += `&year=${filters.year}`;
