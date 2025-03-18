@@ -1,4 +1,4 @@
-class MovieView {
+export default class View {
     constructor() {
         this.searchInput = document.getElementById('search-input');
         this.searchButton = document.getElementById('search-button');
@@ -46,38 +46,43 @@ class MovieView {
 
         if (movies.length > 0) {
             movies.forEach(movie => {
-                const movieCard = document.createElement('div');
-                movieCard.classList.add('movie-card');
-
-                const img = document.createElement('img');
-                img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
-                img.alt = movie.title;
-                img.style.cursor = 'pointer';
-
-                const title = document.createElement('h3');
-                title.textContent = movie.title;
-
-                const year = document.createElement('p');
-                year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
-
-                const rating = document.createElement('p');
-                rating.textContent = `Note: ${movie.vote_average.toFixed(1)} ⭐`;
-
-                const favoriteButton = document.createElement('button');
-                favoriteButton.classList.add('favorite-button');
-                this.updateFavoriteButton(favoriteButton, isFavorite(movie.id));
-
-                movieCard.appendChild(img);
-                movieCard.appendChild(title);
-                movieCard.appendChild(year);
-                movieCard.appendChild(rating);
-                movieCard.appendChild(favoriteButton);
-
+                const movieCard = this.createMovieCard(movie, isFavorite(movie.id));
                 this.resultsContainer.appendChild(movieCard);
             });
         } else {
             this.resultsContainer.textContent = '(Aucun résultat trouvé)';
         }
+    }
+
+    createMovieCard(movie, isFavorite) {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card');
+
+        const img = document.createElement('img');
+        img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
+        img.alt = movie.title;
+        img.style.cursor = 'pointer';
+
+        const title = document.createElement('h3');
+        title.textContent = movie.title;
+
+        const year = document.createElement('p');
+        year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
+
+        const rating = document.createElement('p');
+        rating.textContent = `Note: ${movie.vote_average.toFixed(1)} ⭐`;
+
+        const favoriteButton = document.createElement('button');
+        favoriteButton.classList.add('favorite-button');
+        this.updateFavoriteButton(favoriteButton, isFavorite);
+
+        movieCard.appendChild(img);
+        movieCard.appendChild(title);
+        movieCard.appendChild(year);
+        movieCard.appendChild(rating);
+        movieCard.appendChild(favoriteButton);
+
+        return movieCard;
     }
 
     updateFavoriteButton(button, isFavorite) {
@@ -90,11 +95,14 @@ class MovieView {
         this.nextPageButton.style.display = currentPage < totalPages ? 'inline-block' : 'none';
     }
 
-    getFilters() {
-        return {
-            genre: this.genreFilter.value,
-            year: this.yearFilter.value,
-            rating: this.ratingFilter.value
-        };
+    showLoading() {
+        this.loadingGif.style.display = 'block';
+        this.resultsContainer.innerHTML = '';
+    }
+
+    showError(message) {
+        this.loadingGif.style.display = 'none';
+        this.resultsContainer.textContent = message;
     }
 }
+

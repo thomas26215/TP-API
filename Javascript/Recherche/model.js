@@ -1,7 +1,7 @@
-// Modèle
-class MovieModel {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
+const apiKey = '2fa77c81a2d451f7470fd8d397c639d0';
+
+export default class Model {
+    constructor() {
         this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         this.genres = [];
         this.currentPage = 1;
@@ -10,7 +10,7 @@ class MovieModel {
 
     async loadGenres() {
         try {
-            const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=fr-FR`);
+            const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`);
             const data = await response.json();
             this.genres = data.genres;
             return this.genres;
@@ -20,7 +20,7 @@ class MovieModel {
     }
 
     async searchMovies(query, filters = {}, page = 1) {
-        let url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${query}&language=fr-FR&page=${page}`;
+        let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR&page=${page}`;
 
         if (filters.genre) url += `&with_genres=${filters.genre}`;
         if (filters.year) url += `&year=${filters.year}`;
@@ -38,7 +38,7 @@ class MovieModel {
             return filteredResults;
         } catch (error) {
             console.error('Erreur lors de la recherche:', error);
-            return [];
+            throw error;
         }
     }
 
@@ -56,3 +56,4 @@ class MovieModel {
         return this.favorites.some(fav => fav.id === movieId);
     }
 }
+
