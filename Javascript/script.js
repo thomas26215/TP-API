@@ -24,7 +24,11 @@ let currentSearchTerm = '';  // Stocker le terme de recherche actuel
 
 // Initialisation des genres au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
-    loadGenres();
+    initApp();
+});
+
+async function initApp() {
+    await loadGenres();
     displayFavorites();
 
     // Gestion des clics sur les liens du menu
@@ -39,23 +43,28 @@ document.addEventListener('DOMContentLoaded', () => {
     searchButton.disabled = true;
 
     // Afficher tous les films au chargement de la page
-    fetchTrendingMovies();
-});
+    await fetchTrendingMovies();
+}
 
 // Chargement des genres depuis l'API
-function loadGenres() {
-    fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`)
-        .then(response => response.json())
-        .then(data => {
-            genres = data.genres || [];
-            genres.forEach(genre => {
-                const option = document.createElement('option');
-                option.value = genre.id;
-                option.textContent = genre.name;
-                genreFilter.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Erreur lors du chargement des genres:', error));
+async function loadGenres() {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        genres = data.genres || [];
+        genres.forEach(genre => {
+            const option = document.createElement('option');
+            option.value = genre.id;
+            option.textContent = genre.name;
+            genreFilter.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Erreur lors du chargement des genres:', error);
+        showNotification('Erreur lors du chargement des genres.');
+    }
 }
 
 // Affichage des favoris
@@ -89,7 +98,7 @@ function displayFavorites() {
 }
 
 // Recherche de films/séries
-function searchMovies(query, filters = {}, page = 1) {
+async function searchMovies(query, filters = {}, page = 1) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = '';
     currentSearchTerm = query;
@@ -99,70 +108,75 @@ function searchMovies(query, filters = {}, page = 1) {
     if (filters.genre) url += `&with_genres=${filters.genre}`;
     if (filters.year) url += `&year=${filters.year}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            loadingGif.style.display = 'none';
-            currentPage = data.page;
-            totalPages = data.total_pages;
-            updatePaginationButtons();
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        loadingGif.style.display = 'none';
+        currentPage = data.page;
+        totalPages = data.total_pages;
+        updatePaginationButtons();
 
-            if (data.results && data.results.length > 0) {
-                let filteredResults = data.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+        if (data.results && data.results.length > 0) {
+            let filteredResults = data.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
 
-                if (currentMediaType !== 'all') {
-                    filteredResults = filteredResults.filter(item => item.media_type === currentMediaType);
-                }
-                
-                if (filters.rating) {
-                    filteredResults = filteredResults.filter(item => item.vote_average >= parseFloat(filters.rating));
-                }
-
-                displayResults(filteredResults);
-            } else {
-                resultsContainer.textContent = '(Aucun résultat trouvé)';
+            if (currentMediaType !== 'all') {
+                filteredResults = filteredResults.filter(item => item.media_type === currentMediaType);
             }
-        })
-        .catch(error => {
-            loadingGif.style.display = 'none';
-            resultsContainer.textContent = 'Erreur lors de la recherche.';
-            console.error(error);
-        });
+
+            if (filters.rating) {
+                filteredResults = filteredResults.filter(item => item.vote_average >= parseFloat(filters.rating));
+            }
+            displayResults(filteredResults);
+        } else {
+            resultsContainer.textContent = '(Aucun résultat trouvé)';
+        }
+    } catch (error) {
+        loadingGif.style.display = 'none';
+        resultsContainer.textContent = 'Erreur lors de la recherche.';
+        console.error(error);
+        showNotification('Erreur lors de la recherche.');
+    }
 }
 
 // Afficher les films populaires (sans recherche)
-function fetchTrendingMovies(page = 1) {
+async function fetchTrendingMovies(page = 1) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = '';
     currentSearchTerm = '';  // Effacer le terme de recherche
 
     let url = `https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}&language=fr-FR&page=${page}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            loadingGif.style.display = 'none';
-            currentPage = data.page;
-            totalPages = data.total_pages;
-            updatePaginationButtons();
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        loadingGif.style.display = 'none';
+        currentPage = data.page;
+        totalPages = data.total_pages;
+        updatePaginationButtons();
 
-            if (data.results && data.results.length > 0) {
-                let filteredResults = data.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+        if (data.results && data.results.length > 0) {
+            let filteredResults = data.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
 
-                if (currentMediaType !== 'all') {
-                    filteredResults = filteredResults.filter(item => item.media_type === currentMediaType);
-                }
-
-                displayResults(filteredResults);
-            } else {
-                resultsContainer.textContent = '(Aucun résultat trouvé)';
+            if (currentMediaType !== 'all') {
+                filteredResults = filteredResults.filter(item => item.media_type === currentMediaType);
             }
-        })
-        .catch(error => {
-            loadingGif.style.display = 'none';
-            resultsContainer.textContent = 'Erreur lors du chargement des films populaires.';
-            console.error(error);
-        });
+
+            displayResults(filteredResults);
+        } else {
+            resultsContainer.textContent = '(Aucun résultat trouvé)';
+        }
+    } catch (error) {
+        loadingGif.style.display = 'none';
+        resultsContainer.textContent = 'Erreur lors du chargement des films populaires.';
+        console.error(error);
+        showNotification('Erreur lors du chargement des films populaires.');
+    }
 }
 
 function displayResults(results) {
@@ -275,14 +289,14 @@ function showNotification(message) {
 function handleMediaTypeClick(event, mediaType) {
     event.preventDefault();
     currentMediaType = mediaType;
-    
+
     if (searchInput.value.trim()) {
         const filters = getFilters();
         searchMovies(searchInput.value.trim(), filters, 1);
     } else {
         fetchTrendingMovies();
     }
-    
+
     setActiveLink(event.target);
 }
 
@@ -362,7 +376,7 @@ prevPageButton.addEventListener('click', () => {
 
 nextPageButton.addEventListener('click', () => {
     if (currentPage < totalPages) {
-         if (currentSearchTerm) {
+        if (currentSearchTerm) {
             const filters = getFilters();
             searchMovies(currentSearchTerm, filters, currentPage + 1);
         } else {
