@@ -16,20 +16,6 @@ let genres = [];
 let currentPage = 1;
 let totalPages = 1;
 
-function loadGenres() {
-    fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`)
-        .then(response => response.json())
-        .then(data => {
-            genres = data.genres;
-            genres.forEach(genre => {
-                const option = document.createElement('option');
-                option.value = genre.id;
-                option.textContent = genre.name;
-                genreFilter.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Erreur lors du chargement des genres:', error));
-}
 
 function displayFavorites() {
     favoritesList.innerHTML = '';
@@ -61,7 +47,7 @@ function displayFavorites() {
     }
 }
 
-function searchMovies(query, filters = {}, page = 1) {
+async function searchMovies(query, filters = {}, page = 1) {
     loadingGif.style.display = 'block';
     resultsContainer.innerHTML = '';
     let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&language=fr-FR&page=${page}`;
@@ -69,66 +55,65 @@ function searchMovies(query, filters = {}, page = 1) {
     if (filters.genre) url += `&with_genres=${filters.genre}`;
     if (filters.year) url += `&year=${filters.year}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            loadingGif.style.display = 'none';
-            currentPage = data.page;
-            totalPages = data.total_pages;
-            updatePaginationButtons();
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        loadingGif.style.display = 'none';
+        currentPage = data.page;
+        totalPages = data.total_pages;
+        updatePaginationButtons();
 
-            if (data.results && data.results.length > 0) {
-                let filteredResults = data.results;
-                if (filters.rating) {
-                    filteredResults = filteredResults.filter(movie => movie.vote_average >= parseFloat(filters.rating));
-                }
-                filteredResults.forEach(movie => {
-                    const movieCard = document.createElement('div');
-                    movieCard.classList.add('movie-card');
-
-                    const img = document.createElement('img');
-                    img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
-                    img.alt = movie.title;
-                    img.addEventListener('click', () => {
-                        window.location.href = `movie-details.html?id=${movie.id}`;
-                    });
-                    img.style.cursor = 'pointer';
-
-                    const title = document.createElement('h3');
-                    title.textContent = movie.title;
-
-                    const year = document.createElement('p');
-                    year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
-
-                    const rating = document.createElement('p');
-                    rating.textContent = `Note: ${movie.vote_average.toFixed(1)} ⭐`;
-
-                    const favoriteButton = document.createElement('button');
-                    favoriteButton.classList.add('favorite-button');
-                    updateFavoriteButton(favoriteButton, movie);
-
-                    favoriteButton.addEventListener('click', () => {
-                        toggleFavorite(movie);
-                        updateFavoriteButton(favoriteButton, movie);
-                    });
-
-                    movieCard.appendChild(img);
-                    movieCard.appendChild(title);
-                    movieCard.appendChild(year);
-                    movieCard.appendChild(rating);
-                    movieCard.appendChild(favoriteButton);
-
-                    resultsContainer.appendChild(movieCard);
-                });
-            } else {
-                resultsContainer.textContent = '(Aucun résultat trouvé)';
+        if (data.results && data.results.length > 0) {
+            let filteredResults = data.results;
+            if (filters.rating) {
+                filteredResults = filteredResults.filter(movie => movie.vote_average >= parseFloat(filters.rating));
             }
-        })
-        .catch(error => {
-            loadingGif.style.display = 'none';
-            resultsContainer.textContent = 'Erreur lors de la recherche.';
-            console.error(error);
-        });
+            filteredResults.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.classList.add('movie-card');
+
+                const img = document.createElement('img');
+                img.src = movie.poster_path ? `https://image.tmdb.org/t/p/w92${movie.poster_path}` : 'placeholder.png';
+                img.alt = movie.title;
+                img.addEventListener('click', () => {
+                    window.location.href = `movie-details.html?id=${movie.id}`;
+                });
+                img.style.cursor = 'pointer';
+
+                const title = document.createElement('h3');
+                title.textContent = movie.title;
+
+                const year = document.createElement('p');
+                year.textContent = `(${new Date(movie.release_date).getFullYear()})`;
+
+                const rating = document.createElement('p');
+                rating.textContent = `Note: ${movie.vote_average.toFixed(1)} ⭐`;
+
+                const favoriteButton = document.createElement('button');
+                favoriteButton.classList.add('favorite-button');
+                updateFavoriteButton(favoriteButton, movie);
+
+                favoriteButton.addEventListener('click', () => {
+                    toggleFavorite(movie);
+                    updateFavoriteButton(favoriteButton, movie);
+                });
+
+                movieCard.appendChild(img);
+                movieCard.appendChild(title);
+                movieCard.appendChild(year);
+                movieCard.appendChild(rating);
+                movieCard.appendChild(favoriteButton);
+
+                resultsContainer.appendChild(movieCard);
+            });
+        } else {
+            resultsContainer.textContent = '(Aucun résultat trouvé)';
+        }
+    } catch (error) {
+        loadingGif.style.display = 'none';
+        resultsContainer.textContent = 'Erreur lors de la recherche.';
+        console.error(error);
+    }
 }
 
 function updateFavoriteButton(button, movie) {
@@ -195,6 +180,8 @@ nextPageButton.addEventListener('click', () => {
     }
 });
 
-loadGenres();
-displayFavorites();
+(async () => {
+    await loadGenres();
+    displayFavorites();
+})();
 
