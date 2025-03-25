@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TP-API Recherche de Films et Séries</title>
     <link rel="stylesheet" href="Style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Style pour la notification */
         .notification {
@@ -18,24 +21,30 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: none; /* Initialement cachée */
+            display: none;
+            /* Initialement cachée */
             opacity: 0;
             transition: opacity 0.5s ease-in-out, transform 0.4s ease-out;
-            transform: translateY(-20px); /* Déplace légèrement vers le haut initialement */
+            transform: translateY(-20px);
+            /* Déplace légèrement vers le haut initialement */
         }
 
         .notification.show {
             display: block;
             opacity: 1;
-            transform: translateY(0); /* Remet à sa position normale */
+            transform: translateY(0);
+            /* Remet à sa position normale */
         }
 
         #favorites-list {
             list-style: none;
             padding: 0;
-            display: flex; /* Utiliser flexbox pour une barre horizontale */
-            overflow-x: auto; /* Permettre le défilement horizontal */
-            white-space: nowrap; /* Empêcher les éléments de passer à la ligne */
+            display: flex;
+            /* Utiliser flexbox pour une barre horizontale */
+            overflow-x: auto;
+            /* Permettre le défilement horizontal */
+            white-space: nowrap;
+            /* Empêcher les éléments de passer à la ligne */
         }
 
         #favorites-list li {
@@ -94,6 +103,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="boxed">
@@ -145,7 +155,8 @@
         <!-- Pagination -->
         <div id="pagination">
             <button id="prev-page" style="display:none;">Précédent</button>
-            <span id="page-info"></span> <!-- Conteneur pour les numéros de page -->
+            <span id="page-info"></span>
+            <!-- Conteneur pour les numéros de page -->
             <button id="next-page" style="display:none;">Suivant</button>
         </div>
 
@@ -158,7 +169,8 @@
     <div class="notification" id="notification"></div>
 
     <!-- Script principal -->
-    <script src="./Javascript/script.js"></script>
+    <script type="module" src="./Javascript/controlleur.js"></script>
 </body>
+
 </html>
 
