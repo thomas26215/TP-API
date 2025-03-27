@@ -2,7 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background: linear-gradient(45deg, #000000, #2e024e); /* Dégradé du noir vers le violet foncé */
     color: #333;
     line-height: 1.6;
 }
@@ -23,9 +23,9 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #fff;
+    background-color: rgba(73, 9, 129, 0.747); 
     padding: 15px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
 }
 
 .boxed {
@@ -68,7 +68,7 @@ header {
 
 .header-menu li a {
     text-decoration: none;
-    color: #495057;
+    color: #ffffff; 
     padding: 12px 24px;
     font-size: 1.1rem;
     font-weight: 500;
@@ -78,12 +78,12 @@ header {
 }
 
 .header-menu li a:hover {
-    background-color: #e9ecef;
-    color: #343a40;
+    background-color: rgba(255, 255, 255, 0.2); 
+    color: #ffffff;
 }
 
 .header-menu li a.active {
-    background-color: #28a745;
+    background-color: #4CAF50; /* Vert pour indiquer la page active */
     color: white;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
@@ -346,3 +346,122 @@ h2 {
     background-color: #e0e0e0;
 }
 
+/* Style pour la notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none;
+    /* Initialement cachée */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.4s ease-out;
+    transform: translateY(-20px);
+    /* Déplace légèrement vers le haut initialement */
+}
+
+.notification.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    /* Remet à sa position normale */
+}
+
+#favorites-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    /* Utiliser flexbox pour une barre horizontale */
+    overflow-x: auto;
+    /* Permettre le défilement horizontal */
+    white-space: nowrap;
+    /* Empêcher les éléments de passer à la ligne */
+}
+
+#favorites-list li {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+#favorites-list li:hover {
+    background-color: #e9e9e9;
+}
+
+#favorites-list li button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#favorites-list li button:hover {
+    background-color: #c0392b;
+}
+
+#page-info {
+    margin: 0 15px;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-number {
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page-number.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.page-number:hover {
+    background-color: #e0e0e0;
+}
+
+button {
+    background-color: #4CAF50; /* Vert */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #45a049; /* Vert légèrement plus foncé */
+    transform: scale(1.05); /* Agrandissement léger */
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+}
+
+button a:hover {
+    text-decoration: none; /* Assure que le texte reste sans soulignement */
+}
