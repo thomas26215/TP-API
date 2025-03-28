@@ -2,7 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(45deg, #000000, #2e024e); /* Dégradé du noir vers le violet foncé */
+    background: #808080; 
     color: #333;
     line-height: 1.6;
 }
@@ -23,7 +23,7 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: rgba(73, 9, 129, 0.747); 
+    background-color: #606060; 
     padding: 15px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
 }
