@@ -2,7 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background: #808080; 
+    background: #F8F9FA; /* Fond principal gris clair */
     color: #333;
     line-height: 1.6;
 }
@@ -11,7 +11,7 @@ body {
     width: 90%;
     max-width: 1200px;
     margin: 30px auto;
-    background-color: #fff;
+    background-color: #E5E5E5; /* Fond secondaire gris moyen */
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -23,7 +23,7 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #606060; 
+    background-color: #001F3F; /* Bleu foncé */
     padding: 15px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); 
 }
@@ -68,7 +68,7 @@ header {
 
 .header-menu li a {
     text-decoration: none;
-    color: #ffffff; 
+    color: #FFFFFF; /* Texte blanc */
     padding: 12px 24px;
     font-size: 1.1rem;
     font-weight: 500;
@@ -83,7 +83,7 @@ header {
 }
 
 .header-menu li a.active {
-    background-color: #4CAF50; /* Vert pour indiquer la page active */
+    background-color: #28A745; /* Vert vif pour boutons actifs */
     color: white;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
@@ -102,7 +102,7 @@ header {
 
 h1, h2 {
     text-align: center;
-    color: #343a40;
+    color: #003366; /* Bleu foncé pour les titres */
     margin-bottom: 25px;
 }
 
@@ -169,6 +169,8 @@ h2 {
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 1rem;
+    background-color: #F0F0F0; /* Gris clair */
+    color: #000000; /* Texte noir */
     transition: border-color 0.3s ease;
 }
 
@@ -181,7 +183,7 @@ h2 {
 
 #apply-filters {
     padding: 12px 24px;
-    background-color: #28a745;
+    background-color: #28A745; /* Vert vif */
     color: white;
     border: none;
     border-radius: 6px;
@@ -211,14 +213,14 @@ h2 {
 }
 
 .movie-card {
-    border: 1px solid #dee2e6;
+    border: 1px solid #DCDCDC; /* Bordures gris clair */
     border-radius: 12px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background-color: #fff;
+    background-color: #FFFFFF; /* Fond blanc */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -237,19 +239,19 @@ h2 {
 .movie-card h3 {
     font-size: 1.2rem;
     margin-bottom: 8px;
-    color: #343a40;
+    color: #333333; /* Texte gris foncé */
 }
 
 .movie-card p {
     font-size: 0.9rem;
-    color: #6c757d;
+    color: #333333; /* Texte gris foncé */
     margin-bottom: 5px;
 }
 
 .favorite-button {
     background-color: transparent;
     border: none;
-    color: #ffc107;
+    color: #FFD700; /* Étoiles jaune doré */
     cursor: pointer;
     font-size: 1.2rem;
     transition: transform 0.3s ease;
@@ -464,4 +466,12 @@ button a {
 
 button a:hover {
     text-decoration: none; /* Assure que le texte reste sans soulignement */
+}
+
+/* Footer styles */
+footer {
+    background-color: #001F3F; /* Bleu foncé */
+    color: #FFFFFF; /* Texte blanc */
+    padding: 20px;
+    text-align: center;
 }
